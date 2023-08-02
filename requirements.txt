@@ -1,0 +1,13 @@
+sentence-transformers
+sqlalchemy
+pandas
+pymysql
+elasticsearch
+Flask
+Flask-Cors
+gunicorn
+PyMySQL
+numpy
+accelerate
+peft
+bitsandbytes==0.39.0

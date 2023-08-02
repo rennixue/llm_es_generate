@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta name="description" content=""/>
+    <title>{% block title %}{% endblock %}</title>
+    <link href="/chatgpt_static/css/bootstrap.min.css" rel="stylesheet"/>
+    <style>
+
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          {#font-size: 3.5rem;#}
+            font-size: 3rem;
+        }
+      body {
+          font-size: 0.95rem;
+      }
+      }
+
+    </style>
+    <link href="/chatgpt_static/css/home.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+{% block content %}{% endblock %}
+<script src="/chatgpt_static/js/jquery.slim.min.js"></script>
+<script src="/chatgpt_static/js/bootstrap.bundle.min.js"></script>
+<script src="/chatgpt_static/js/jquery-3.6.4.min.js"></script>
+</body>
+</html>

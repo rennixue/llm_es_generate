@@ -1,0 +1,141 @@
+{% extends 'base.html' %}
+
+{% block title %}Es{% endblock %}
+
+{% block content %}
+<div class="container mt-5" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+<!--    <div class="d-flex flex-row-reverse mb-3">-->
+
+<!--        <a href="/logs_ib">-->
+<!--            <button type="button" class="btn btn-secondary">Logs</button>-->
+<!--        </a>-->
+<!--    </div>-->
+
+    <div class="jumbotron">
+
+        <input type="text" onkeydown="checkEnter(event)" name="content" id="content" style="height: 32px; width: 800px; margin-right: 10px;margin-top: 5px" required="required" placeholder="请输入搜索内容">
+        <svg onclick="submit()" t="1690338739456" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="2661" width="32" height="32"><path d="M469.333333 768c-166.4 0-298.666667-132.266667-298.666666-298.666667s132.266667-298.666667 298.666666-298.666666 298.666667 132.266667 298.666667 298.666666-132.266667 298.666667-298.666667 298.666667z m0-85.333333c119.466667 0 213.333333-93.866667 213.333334-213.333334s-93.866667-213.333333-213.333334-213.333333-213.333333 93.866667-213.333333 213.333333 93.866667 213.333333 213.333333 213.333334z m251.733334 0l119.466666 119.466666-59.733333 59.733334-119.466667-119.466667 59.733334-59.733333z" fill="#515151" p-id="2662"></path></svg>
+
+    </div>
+    <div id="chatbox"></div>
+
+
+
+
+
+<!--    <div class="form-group">-->
+<!--        <div class="col-sm-2 d-flex flex-row-reverse" >-->
+<!--            <button type="button" class="btn btn-primary" onclick="submit()" style="margin-right: 40px">Submit</button>-->
+<!--        </div>-->
+<!--    </div>-->
+
+</div>
+<script src="/chatgpt_static/js/jquery.slim.min.js"></script>
+<script src="/chatgpt_static/js/jquery-3.6.4.min.js"></script>
+<script type="text/javascript">
+    function submit_radio(event) {
+        const kw = event.target.getAttribute('data-arg-keyword');
+        const ps = event.target.getAttribute('data-arg-paragraph');
+        const label = event.target.getAttribute('data-arg3');
+        // console.log(label)
+        // console.log(kw)
+        // console.log(ps)
+        $.ajax({
+            url: "/submit_radio",
+            type: 'POST',
+            contentType: "application/json;charset=utf-8",
+            data: JSON.stringify({"label": label, "query": kw, "ps": ps}),
+            dataType: 'json',
+            success: function(res){
+                alert('Success!')
+                console.log('res', res)
+            },
+            error: function(error){
+                console.log('error', error)
+            }
+        });
+    }
+
+    function insertHtml(res){
+        var kw = res['kw']
+        var messages = res['ps']
+        let messages_reverse = []
+        // let html = ''
+        console.log(messages, typeof(messages))
+        // for(let i=messages.length -1; i>=0; i--){
+        //     // messages_reverse.push(messages[i])
+        //     html += `<div class="alert alert-dark" role="alert" style="white-space: pre-line; text-align: left">${msg}</div>`
+        // }
+
+        let html = ''
+        for(let i=0; i<messages.length; i++) {
+            const msg = messages[i]
+            // console.log('msg:',msg)
+            // const m =  messages[i]
+            const timestamp = Date.now() + i.toString()
+            const good_timestamp = 'good_' + timestamp
+            const bad_timestamp = 'bad_' + timestamp
+            html += `<div class="alert alert-dark" role="alert" style="white-space: pre-line; text-align: left">${msg}</div>`
+            html += `<div class="form-check">
+                        <input class="form-check-input" type="radio" name="${good_timestamp}" id="${good_timestamp}" value="1" data-arg-keyword="${kw}" data-arg-paragraph="${msg}" data-arg3="1" onclick="submit_radio(event)">
+                        <label class="form-check-label" for="${good_timestamp}">
+                            Good
+                        </label>
+                    </div>
+                    <div class="form-check" style="margin-bottom: 20px">
+                        <input class="form-check-input" type="radio" name="${good_timestamp}" id="${bad_timestamp}" value="0" data-arg-keyword="${kw}" data-arg-paragraph="${msg}" data-arg3="0" onclick="submit_radio(event)">
+                        <label class="form-check-label" for="${bad_timestamp}">
+                            Bad
+                        </label>
+                    </div>`
+
+
+
+        }
+        $('#chatbox').html(html)
+    }
+    function checkEnter(event) {
+      if (event.keyCode === 13) {
+        submit(); // 按下回车键时调用请求函数
+      }
+    }
+    function submit(){
+        var kw = document.getElementById('content').value.trim()
+        if (kw != ''){
+            $.ajax({
+                url: "",
+                type: 'POST',
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify({'kw': kw}),
+                dataType: 'json',
+                success: function(res){
+                    // $("#result_score").removeClass('invisible')
+                    // btnDisabled = false
+                    // console.log(res['ps'])
+                    insertHtml(res)
+                },
+                error: function(){
+                    btnDisabled = false
+                }
+            })
+        }
+
+    }
+
+
+
+
+
+
+
+
+</script>
+<style>
+.jumbotron {
+    padding: 20px 40px ;
+}
+.invisible_linear {
+    display: none;
+}
+</style>
+{% endblock %}

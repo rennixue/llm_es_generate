@@ -1,0 +1,33 @@
+version: "1.1"
+services:
+  sbert_es:
+    build: .
+    image: sbert_es_gpu
+    restart: always
+    container_name: sbert_es_gpu
+    volumes:
+      - './:/sbert_es:rw'
+      - '/home/burshy/workshop/chatGLM-6B-QLoRA/THUDM/chatglm2-6b:/home/burshy/workshop/chatGLM-6B-QLoRA/THUDM/chatglm2-6b:r'
+    command:
+      - /bin/sh
+      - -c
+      - "cd /sbert_es
+            && export FLASK_APP=flaskr
+            && gunicorn -t 300 -w 1 -b 0.0.0.0:8000 'flaskr:app'"
+    ports:
+      - "8191:8000"
+
+    networks:
+      - app_net
+    environment:
+        - "NVIDIA_VISIBLE_DEVICES=all"
+    deploy:
+        resources:
+            reservations:
+                devices:
+                  - driver: "nvidia"
+                    count: "all"
+                    capabilities: ["gpu"]
+networks:
+  app_net:
+      
